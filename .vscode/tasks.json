@@ -1,0 +1,121 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Make output dir",
+            "command": "mkdir -p ./build",            
+            "options": {
+                "cwd": "${fileDirname}"
+            }
+        },
+        {
+            
+            "type": "shell",
+            "label": "Build",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${file}",
+                "-std=c++17",
+                "-Wshadow",
+                "-Wall",
+                "-O2",
+                "-Wno-unused-result",
+                "@${fileDirname}/../conan-build/conanbuildinfo.args",
+                "-o",
+                "${fileDirname}/build/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn" :[
+                "Make output dir"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "Build debug",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${file}",
+                "-std=c++17",
+                "-Wshadow",
+                "-Wall",
+                "-Wno-unused-result",
+                "@${fileDirname}/../conan-build/conanbuildinfo.args",
+                "-o",
+                "${fileDirname}/build/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOn" :[
+                "Make output dir"
+            ]            
+        },
+        {
+            "type": "shell",
+            "label": "Build sanitize",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${file}",
+                "-std=c++17",
+                "-Wshadow",
+                "-Wall",
+                "-fsanitize=address",
+                "-fno-omit-frame-pointer",
+                "-fsanitize=undefined",
+                "@${fileDirname}/../conan-build/conanbuildinfo.args",
+                "-O",
+                "-o",
+                "${fileDirname}/build/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOn" :[
+                "Make output dir"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "Run",
+            "command": "./${fileBasenameNoExtension}",
+            "options": {
+                "cwd": "${fileDirname}/build"
+            },
+            "problemMatcher": [],
+            "dependsOn": [
+                "Build"
+            ]
+        },
+        {
+            "type": "shell",
+            "label": "Sanitize",
+            "command": "./${fileBasenameNoExtension}",
+            "options": {
+                "cwd": "${fileDirname}/build"
+            },
+            "problemMatcher": [],
+            "dependsOn": [
+                "Build sanitize"
+            ]
+        }
+    ]
+}
